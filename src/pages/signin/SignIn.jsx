@@ -1,17 +1,20 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../components/ui/button";
-import { data } from "react-router-dom";
+import newRequest from "../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function SignIn() {
   return (
     <div className="flex flex-col md:flex-row justify-between items-center min-h-screen gap-3">
-      <div className="text-center md:text-left md:w-1/3">
-        <h1 className="text-4xl font-bold text-center items-center">
+      <div className="flex flex-col justify-center items-center text-center md:text-left md:w-1/3 min-h-screen">
+        <h1 className="text-3xl font-semibold mb-8 text-transparent bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text">
           Welcome to Planova
         </h1>
         <ReactHookForm />
       </div>
+
       <div className="md:w-1/2">
         <img
           src="/i4.jpeg"
@@ -24,29 +27,39 @@ function SignIn() {
 }
 
 function ReactHookForm() {
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
-    getValues,
   } = useForm();
 
-  const onsubmit = async (data) => {
-    //Submit to server
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    reset();
+  const onSubmit = async (data) => {
+    try {
+      const { email, password } = data;
+      const res = await newRequest.post("/auth/signin", { email, password });
+      console.log("Response Data:", res.data);
+      localStorage.setItem("currentUser", JSON.stringify(res.data));
+      navigate("/");
+    } catch (error) {
+      setError(
+        error.response?.data || "Invalid credentials, please try again."
+      );
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onsubmit)} className="flex flex-col gap-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
       <input
         {...register("email", {
           required: "Email is required",
         })}
         type="email"
         placeholder="Email"
-        className="px-3 py-2 rounded"
+        className="px-8 py-2 rounded border-2 border-cyan-900"
       />
       {errors.email && (
         <p className="text-red-500">{`${errors.email.message}`}</p>
@@ -56,27 +69,24 @@ function ReactHookForm() {
         {...register("password", {
           required: "Password is must",
           minLength: {
-            value: 8,
-            message: "Password must be atleast 8 charecters",
+            value: 4,
+            message: "Password must be atleast 4 charecters",
           },
         })}
         type="password"
         placeholder="Password"
-        className="px-3 py-2 rounded"
+        className="px-8 py-2 rounded border-2 border-cyan-900"
       />
       {errors.password && (
         <p className="text-red-500">{`${errors.password.message}`}</p>
       )}
-      <input
-        {...register("confirmPassword", { required: "Confirm the password" })}
-        type="password"
-        placeholder="Confirm Password"
-        className="px-3 py-2 rounded"
-      />
-      {errors.confirmPassword && (
-        <p className="text-red-500">{`${errors.password.message}`}</p>
-      )}
-      <Button>Submit</Button>
+
+      {/* Display server error */}
+      {error && <p className="text-red-500">{error}</p>}
+
+      <Button className="mt-4" disabled={isSubmitting}>
+        Submit
+      </Button>
     </form>
   );
 }
