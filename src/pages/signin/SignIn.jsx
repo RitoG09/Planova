@@ -41,7 +41,6 @@ function ReactHookForm() {
     try {
       const { email, password } = data;
       const res = await newRequest.post("/auth/signin", { email, password });
-      console.log("Response Data:", res.data);
       localStorage.setItem("currentUser", JSON.stringify(res.data));
       navigate("/");
     } catch (error) {

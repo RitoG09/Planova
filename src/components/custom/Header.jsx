@@ -12,7 +12,7 @@ function Header() {
   const handleSignout = async () => {
     try {
       await newRequest.post("/auth/signout");
-      localStorage.setItem("currentUser", null);
+      localStorage.removeItem("currentUser");
       navigate("/");
     } catch (error) {
       console.log(error);
