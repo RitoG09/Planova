@@ -21,7 +21,6 @@ function Hero() {
 
   return (
     <section className=" flex flex-col items-center gap-8 pb-20 pt-10 sm:gap-10 justify-between ">
-    
       <div className="flex cursor-pointer items-center gap-1 rounded-full border bg-secondary px-3 py-0.5 hover:bg-secondary/60 bg-blue-50">
         <span className="text-sm text-secondary-foreground">
           "Why Choose Planova?"
@@ -41,7 +40,7 @@ function Hero() {
         </svg>
       </div>
       <h1 className="max-w-2xl text-center font-heading text-4xl font-semibold sm:text-5xl tracking-tight text-transparent bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text">
-        Your AI-Powered Trip Planner for Effortless and Personalized Journeys.
+        Your AI-Powered Trip Guide for Effortless and Personalized Journeys.
       </h1>
       <p className="max-w-lg text-center text-lg text-muted-foreground sm:text-xl">
         Plan Smarter, Travel Better with Planova with your personalized budget
@@ -72,7 +71,6 @@ function Hero() {
         refresh
       />
     </section>
-    
   );
 }
 
