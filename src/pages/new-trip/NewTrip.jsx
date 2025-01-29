@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import {
+  AI_PROMPT,
   selectBudgetOption,
   selectTravelesList,
 } from "../../constants/options";
 import { Button } from "../../components/ui/button";
+import toast, { Toaster } from "react-hot-toast";
+import { chatSession } from "../../service/AiModal";
 
 function NewTrip() {
   const [place, setPlace] = useState();
@@ -21,17 +24,46 @@ function NewTrip() {
   //   console.log(formData);
   // }, [formData]);
 
-  const onGenerateTrip = () => {
-    if (formData?.noOfDays > 10) {
+  const onGenerateTrip = async () => {
+    if (
+      (formData?.noOfDays > 10 && !formData?.location) ||
+      !formData?.budget ||
+      !formData?.people
+    ) {
       console.log("maximum 10 days trip can be planned");
+      toast.error("Provide all preferences.", {
+        duration: 4000,
+      });
 
       return;
     }
-    console.log(formData);
-  };
+    const FINAL_PROMPT = AI_PROMPT.replace(
+      "{location}",
+      formData?.location?.label
+    )
+      .replace("{totalDays}", formData?.noOfDays)
+      .replace("{traveller}", formData?.people)
+      .replace("{budget}", formData?.budget);
+
+    console.log(FINAL_PROMPT);
+
+    const result = await chatSession.sendMessage(FINAL_PROMPT);
+
+    console.log(result?.response?.text());
+  }; 
 
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10">
+      <Toaster
+        toastOptions={{
+          className: "",
+          style: {
+            border: "1px solid #713200",
+            padding: "14px",
+            color: "#713200",
+          },
+        }}
+      />
       <h2 className="text-4xl text-center font-extrabold">
         Brief your Trip Preferences
       </h2>
@@ -39,7 +71,6 @@ function NewTrip() {
         "Every great journey begins with a plan! Share your preferences, and let
         us craft the perfect adventure for you."
       </p>
-
       <div className="mt-20 flex flex-col gap-10">
         <div>
           <h2 className="text-2xl my-3 font-medium">
