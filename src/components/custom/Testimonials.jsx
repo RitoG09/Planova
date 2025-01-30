@@ -8,37 +8,37 @@ const reviews = [
     name: "Ratan",
     username: "@ratan07",
     body: "It felt like having a personal travel assistant available 24/7",
-    img: "https://avatar.vercel.sh/jack",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsynwv-5qtogtOwJbIjaPFJUmHpzhxgqIAug&s",
   },
   {
     name: "Ashoke",
     username: "@ashokeg15",
     body: "The personalized recommendations from Planova were amazing. ",
-    img: "https://avatar.vercel.sh/jill",
+    img: "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
   },
   {
-    name: "Rahul",
-    username: "@ograhul",
+    name: "Starc",
+    username: "@starcreal",
     body: "The AI-powered trip planning blew me away. It suggested places that I didn’t even know existed, making my trip unforgettable.",
-    img: "https://avatar.vercel.sh/john",
+    img: "https://media.istockphoto.com/id/1682296067/photo/happy-studio-portrait-or-professional-man-real-estate-agent-or-asian-businessman-smile-for.jpg?s=612x612&w=0&k=20&c=9zbG2-9fl741fbTWw5fNgcEEe4ll-JegrGlQQ6m54rg=",
   },
   {
     name: "Sonali",
     username: "@sonalihere",
     body: " Planova's suggestions introduced me to places I’d never have discovered on my own!",
-    img: "https://avatar.vercel.sh/jane",
+    img: "https://i.pinimg.com/736x/55/b5/9c/55b59c73bd0ee0e42c0022168b9d36be.jpg",
   },
   {
     name: "Zoya",
     username: "@iamzoya",
     body: "Planova exceeded all expectations. It’s now my go-to tool for planning every journey!",
-    img: "https://avatar.vercel.sh/jenny",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuNE37Tut2H4DkjwdUaSupJh1cy7a7x2bBTQ&s",
   },
   {
     name: "King",
     username: "@king",
     body: "With Planova, I no longer worry about overpaying or missing out on experiences.",
-    img: "https://avatar.vercel.sh/james",
+    img: "https://img.freepik.com/free-photo/smiley-man-posing-medium-shot_23-2149915893.jpg",
   },
 ];
 
@@ -73,7 +73,9 @@ const ReviewCard = ({ img, name, username, body }) => {
 export default function Testimonials() {
   return (
     <div className="flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
-      <h2 className="text-3xl mb-8 font-bold text-slate-500">What Everyone says....</h2>
+      <h2 className="text-3xl mb-8 font-bold text-slate-500">
+        What Everyone says....
+      </h2>
       <Marquee reverse pauseOnHover className="[--duration:25s]">
         {firstRow.map((review) => (
           <ReviewCard key={review.username} {...review} />

@@ -8,10 +8,13 @@ import {
 import { Button } from "../../components/ui/button";
 import toast, { Toaster } from "react-hot-toast";
 import { chatSession } from "../../service/AiModal";
+import newRequest from "../../utils/newRequest";
+import User from "../../../api/models/user.model";
 
 function NewTrip() {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData({
@@ -24,33 +27,58 @@ function NewTrip() {
   //   console.log(formData);
   // }, [formData]);
 
+ 
   const onGenerateTrip = async () => {
     if (
-      (formData?.noOfDays > 10 && !formData?.location) ||
+      !formData?.location ||
+      !formData?.noOfDays ||
       !formData?.budget ||
       !formData?.people
     ) {
-      console.log("maximum 10 days trip can be planned");
-      toast.error("Provide all preferences.", {
-        duration: 4000,
-      });
-
+      toast.error("Please provide all preferences.");
       return;
     }
-    const FINAL_PROMPT = AI_PROMPT.replace(
-      "{location}",
-      formData?.location?.label
-    )
-      .replace("{totalDays}", formData?.noOfDays)
-      .replace("{traveller}", formData?.people)
-      .replace("{budget}", formData?.budget);
 
-    console.log(FINAL_PROMPT);
+    setIsLoading(true);
+    try {
+      const FINAL_PROMPT = AI_PROMPT.replace(
+        "{location}",
+        formData.location.label
+      )
+        .replace("{totalDays}", formData.noOfDays)
+        .replace("{traveller}", formData.people)
+        .replace("{budget}", formData.budget);
 
-    const result = await chatSession.sendMessage(FINAL_PROMPT);
+      // Get AI response
+      const result = await chatSession.sendMessage(FINAL_PROMPT);
+      const responseText = result?.response?.text();
 
-    console.log(result?.response?.text());
-  }; 
+      // Extract JSON from the response text
+      const jsonStart = responseText.indexOf("{");
+      const jsonEnd = responseText.lastIndexOf("}") + 1;
+      const jsonString = responseText.slice(jsonStart, jsonEnd);
+      const tripData = JSON.parse(jsonString);
+
+      // Save trip data
+      const response = await newRequest.post("/trips/savedtrip", {
+        location: formData.location.label,
+        days: formData.noOfDays,
+        budget: formData.budget,
+        people: formData.people,
+        itinerary: tripData.itinerary,
+        hotelOptions: tripData.hotelOptions,
+        tripDetails: tripData.tripDetails,
+      });
+
+      toast.success("Trip generated and saved successfully!");
+      console.log("Saved trip:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error.response?.data?.message || "Failed to save trip");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10">
