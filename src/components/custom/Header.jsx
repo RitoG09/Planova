@@ -30,7 +30,7 @@ function Header() {
       <div className="flex gap-3">
         {currentUser ? (
           <div className="flex gap-5 justify-center items-center text-lg">
-            <span className="relative h-[50px] w-[150px] rounded-xl flex justify-center items-center">
+            <span className="relative h-[70px] w-[200px] rounded-xl flex justify-center items-center">
               Welcome back, {currentUser.firstname}
               <BorderBeam />
             </span>

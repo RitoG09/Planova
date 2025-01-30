@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.route.js";
+import tripRoute from "./routes/trip.route.js";
 
 const app = express();
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/trips", tripRoute);
 
 //Error Middleware
 app.use((err, req, res, next) => {

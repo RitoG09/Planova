@@ -1,0 +1,53 @@
+import mongoose from "mongoose";
+const { Schema } = mongoose;
+
+const placeSchema = new Schema({
+  placeName: { type: String, required: true },
+  placeDetails: { type: String, required: true },
+  placeImageUrl: String,
+  geoCoordinates: {
+    latitude: Number,
+    longitude: Number,
+  },
+  ticketPricing: String,
+  rating: { type: Number, min: 0, max: 5 },
+  timeTravel: String,
+});
+
+const dayItinerarySchema = new Schema({
+  theme: { type: String, required: true },
+  bestTimeToVisit: String,
+  places: [placeSchema],
+});
+
+const hotelSchema = new Schema({
+  hotelName: { type: String, required: true },
+  hotelAddress: { type: String, required: true },
+  price: { type: String, required: true },
+  hotelImageUrl: String,
+  geoCoordinates: {
+    latitude: Number,
+    longitude: Number,
+  },
+  rating: Number,
+  description: String,
+});
+
+const tripDetailSchema = new Schema({
+  location: { type: String, required: true },
+  duration: { type: String, required: true },
+  budget: { type: String, required: true },
+  travelers: { type: String, required: true },
+});
+
+const tripSchema = new Schema(
+  {
+    tripDetails: { type: tripDetailSchema, required: true },
+    hotelOptions: [hotelSchema],
+    itinerary: { type: Map, of: dayItinerarySchema },
+    // user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("Trip", tripSchema);

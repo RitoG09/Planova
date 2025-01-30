@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import Particles from "../ui/particles.jsx";
+import { Globe } from "../ui/globe.jsx";
 
 function Hero() {
   const [theme, setTheme] = useState("light");
@@ -55,14 +56,27 @@ function Hero() {
           </Button>
         </Link>
       </div>
-      <div className="relative sm:mt-5">
+      <div className="flex flex-row items-center justify-between sm:mt-5 relative gap-2 w-full">
         <img
           alt="travel photo"
           src="/logo1.jpeg"
-          className="w-full max-w-4xl border border-border shadow-lg rounded-2xl"
+          className="w-1/2 max-w-lg border border-border shadow-lg rounded-2xl"
         />
-        <div className="absolute inset-0 -z-10 bg-primary/20 [filter:blur(180px)]" />
+        <div className="w-1/2 flex justify-center relative">
+          <Globe className="relative z-10" />
+          <span className="absolute text-7xl font-bold text-yellow-700 z-20">
+            TRAVEL
+          </span>
+        </div>
+
+        <img
+          alt="travel photo"
+          src="/logo1.jpeg"
+          className="w-1/2 max-w-lg border border-border shadow-lg rounded-2xl"
+        />
+        <div className="absolute inset-0 -z-10 bg-primary/20 blur-[180px]" />
       </div>
+
       <Particles
         className="absolute inset-0 z-0"
         quantity={100}

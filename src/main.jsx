@@ -8,6 +8,7 @@ import Header from "./components/custom/Header.jsx";
 import SignIn from "./pages/signin/SignIn.jsx";
 import SignUp from "./pages/signup/SignUp.jsx";
 import ProtectedRoute from "./components/routetype/ProtectedRoute.jsx";
+import TripHistory from "./pages/trip-history/TripHistory.jsx";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,17 @@ const router = createBrowserRouter([
         <>
           <Header />
           <NewTrip />
+        </>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/trip-history",
+    element: (
+      <ProtectedRoute>
+        <>
+          <Header />
+          <TripHistory />
         </>
       </ProtectedRoute>
     ),
