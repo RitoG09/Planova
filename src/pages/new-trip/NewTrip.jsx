@@ -70,6 +70,7 @@ function NewTrip() {
         hotelOptions: tripData.hotelOptions,
         tripDetails: tripData.tripDetails,
       });
+
       const tripId = response.data._id; // Get the trip ID from the response
       toast.success("Trip generated and saved successfully!");
       console.log("Saved trip:", response.data);
@@ -81,6 +82,10 @@ function NewTrip() {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <div className="text-center p-8">Loading trip details...</div>;
+  }
 
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10">
