@@ -66,9 +66,7 @@ function ViewTrip() {
           </div>
         </div>
 
-        <Button variant="outline" className="mb-6">
-          Download PDF Itinerary
-        </Button>
+        <Button className="mb-6 bg-black">Download PDF Itinerary</Button>
       </div>
 
       {/* Itinerary Section */}

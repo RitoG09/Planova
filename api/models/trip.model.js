@@ -10,7 +10,12 @@ const placeSchema = new Schema({
     longitude: Number,
   },
   ticketPricing: String,
-  rating: { type: Number, min: 0, max: 5 },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    set: (v) => (v === "N/A" ? null : v), // Convert "N/A" to null
+  }, // Allow null values,
   timeTravel: String,
 });
 
@@ -29,7 +34,12 @@ const hotelSchema = new Schema({
     latitude: Number,
     longitude: Number,
   },
-  rating: { type: Number, default: null },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    set: (v) => (v === "N/A" ? null : v), // Convert "N/A" to null
+  },
   description: String,
 });
 
