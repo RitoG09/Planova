@@ -1,4 +1,5 @@
 import Trip from "../models/trip.model.js";
+import mongoose from "mongoose";
 
 const validateHotelOptions = (hotels) => {
   if (!Array.isArray(hotels)) throw new Error("Invalid hotel options format");
@@ -36,5 +37,28 @@ export const savedTrip = async (req, res) => {
       message: error.message || "Internal server error",
       stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
+  }
+};
+
+export const getTripById = async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid trip ID format" });
+    }
+
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(500).json({ message: "Database connection error" });
+    }
+
+    const trip = await Trip.findById(id);
+
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    res.status(200).json(trip);
+  } catch (error) {
+    console.error("Error fetching trip by ID:", error); // Log full error
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

@@ -10,12 +10,14 @@ import toast, { Toaster } from "react-hot-toast";
 import { chatSession } from "../../service/AiModal";
 import newRequest from "../../utils/newRequest";
 import User from "../../../api/models/user.model";
+import { useNavigate } from "react-router-dom";
 
 function NewTrip() {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
   const handleInputChange = (name, value) => {
     setFormData({
       ...formData,
@@ -27,7 +29,6 @@ function NewTrip() {
   //   console.log(formData);
   // }, [formData]);
 
- 
   const onGenerateTrip = async () => {
     if (
       !formData?.location ||
@@ -69,9 +70,10 @@ function NewTrip() {
         hotelOptions: tripData.hotelOptions,
         tripDetails: tripData.tripDetails,
       });
-
+      const tripId = response.data._id; // Get the trip ID from the response
       toast.success("Trip generated and saved successfully!");
       console.log("Saved trip:", response.data);
+      navigate("/view-trip/" + tripId); // Navigate to the new trip page with the trip ID
     } catch (error) {
       console.error("Error:", error);
       toast.error(error.response?.data?.message || "Failed to save trip");

@@ -29,7 +29,7 @@ const hotelSchema = new Schema({
     latitude: Number,
     longitude: Number,
   },
-  rating: Number,
+  rating: { type: Number, default: null },
   description: String,
 });
 
