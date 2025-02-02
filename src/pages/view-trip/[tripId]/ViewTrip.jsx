@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import newRequest from "../../../utils/newRequest";
 import { Button } from "../../../components/ui/button";
+import { GetPlaceDetails, PHOTO_REF_URL } from "../../../service/GlobalApi";
 
 function ViewTrip() {
   const { tripId } = useParams();
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [PhotoUrl, setPhotoUrl] = useState();
+  const [HotelPhotoUrl, setHotelPhotoUrl] = useState();
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -36,6 +39,65 @@ function ViewTrip() {
     fetchTrip();
   }, [tripId]);
 
+  // ✅ Run GetPlacePhoto only when trip is available
+  useEffect(() => {
+    if (!trip) return; // Ensure trip is available before calling the API
+
+    const GetPlacePhoto = async () => {
+      try {
+        const data = {
+          textQuery: trip.tripDetails.location, // Ensure this exists
+        };
+
+        const res = await GetPlaceDetails(data).then((resp) => {
+          console.log(resp.data.places[0].photos[3].name);
+          const PhotoUrl = PHOTO_REF_URL.replace(
+            "{NAME}",
+            resp.data.places[0].photos[3].name
+          );
+          setPhotoUrl(PhotoUrl);
+        });
+
+        if (!res || !res.data) {
+          throw new Error("Invalid response from Google Place API");
+        }
+      } catch (error) {
+        console.error("Error fetching place details:", error.message || error);
+      }
+    };
+
+    GetPlacePhoto();
+  }, [trip]); // ✅ Runs only when trip is set
+
+  useEffect(() => {
+    if (!trip) return; // Ensure trip is available before calling the API
+
+    const GetHotelPhoto = async () => {
+      try {
+        const data = {
+          textQuery: hotel.hotelName, // Ensure this exists
+        };
+
+        const res = await GetPlaceDetails(data).then((resp) => {
+          console.log(resp.data.places[0].photos[3].name);
+          const HotelPhotoUrl = PHOTO_REF_URL.replace(
+            "{NAME}",
+            resp.data.places[0].photos[3].name
+          );
+          setHotelPhotoUrl(HotelPhotoUrl);
+        });
+
+        if (!res || !res.data) {
+          throw new Error("Invalid response from Google Place API");
+        }
+      } catch (error) {
+        console.error("Error fetching place details:", error.message || error);
+      }
+    };
+
+    GetHotelPhoto();
+  }, [trip]); // ✅ Runs only when trip is set
+
   if (loading)
     return <div className="text-center p-8">Loading trip details...</div>;
   if (error) return <div className="text-red-500 text-center p-8">{error}</div>;
@@ -44,10 +106,14 @@ function ViewTrip() {
   return (
     <div className="max-w-6xl mx-auto p-6">
       {/* Trip Overview */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8 flex flex-col gap-4">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           {trip.tripDetails.location} Trip Plan
         </h1>
+        <img
+          src={PhotoUrl}
+          className="h-[340px] w-full object-cover rounded-xl"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-blue-50 p-4 rounded-lg">
@@ -135,7 +201,7 @@ function ViewTrip() {
               <p className="text-gray-600 text-sm">{hotel.description}</p>
               {hotel.hotelImageUrl && (
                 <img
-                  src={hotel.hotelImageUrl}
+                  src={HotelPhotoUrl}
                   alt={hotel.hotelName}
                   className="mt-3 w-full h-48 object-cover rounded-md"
                 />
