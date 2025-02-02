@@ -11,6 +11,7 @@ function ViewTrip() {
   const [error, setError] = useState("");
   const [PhotoUrl, setPhotoUrl] = useState();
   const [HotelPhotoUrl, setHotelPhotoUrl] = useState();
+  const [ItineraryPhotoUrls, setItineraryPhotoUrls] = useState({});
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -70,33 +71,56 @@ function ViewTrip() {
   }, [trip]); // ✅ Runs only when trip is set
 
   useEffect(() => {
-    if (!trip) return; // Ensure trip is available before calling the API
+    if (!trip || !trip.hotelOptions) return; // Ensure trip and hotels exist
 
-    const GetHotelPhoto = async () => {
+    const fetchHotelPhotos = async () => {
       try {
-        const data = {
-          textQuery: hotel.hotelName, // Ensure this exists
-        };
+        const hotelPhotos = {}; // Store hotel photos with hotel names as keys
 
-        const res = await GetPlaceDetails(data).then((resp) => {
-          console.log(resp.data.places[0].photos[3].name);
-          const HotelPhotoUrl = PHOTO_REF_URL.replace(
-            "{NAME}",
-            resp.data.places[0].photos[3].name
-          );
-          setHotelPhotoUrl(HotelPhotoUrl);
-        });
+        for (const hotel of trip.hotelOptions) {
+          const data = { textQuery: hotel.hotelName }; // Query for each hotel
+          const res = await GetPlaceDetails(data);
 
-        if (!res || !res.data) {
-          throw new Error("Invalid response from Google Place API");
+          if (res.data?.places?.[0]?.photos?.[0]?.name) {
+            hotelPhotos[hotel.hotelName] = PHOTO_REF_URL.replace(
+              "{NAME}",
+              res.data.places[0].photos[0].name
+            );
+          }
         }
+
+        setHotelPhotoUrl(hotelPhotos); // Store as an object instead of single URL
       } catch (error) {
-        console.error("Error fetching place details:", error.message || error);
+        console.error("Error fetching hotel photos:", error.message || error);
       }
     };
 
-    GetHotelPhoto();
-  }, [trip]); // ✅ Runs only when trip is set
+    fetchHotelPhotos();
+  }, [trip]);
+
+  useEffect(() => {
+    if (!trip || !trip.itinerary) return;
+    const fetchItineraryPhotos = async () => {
+      try {
+        const itineraryPhotos = {};
+        for (const [day, dayPlan] of Object.entries(trip.itinerary)) {
+          for (const place of dayPlan.places) {
+            const res = await GetPlaceDetails({ textQuery: place.placeName });
+            if (res.data?.places?.[0]?.photos?.[0]?.name) {
+              itineraryPhotos[place.placeName] = PHOTO_REF_URL.replace(
+                "{NAME}",
+                res.data.places[0].photos[0].name
+              );
+            }
+          }
+        }
+        setItineraryPhotoUrls(itineraryPhotos);
+      } catch (error) {
+        console.error("Error fetching itinerary photos:", error);
+      }
+    };
+    fetchItineraryPhotos();
+  }, [trip]);
 
   if (loading)
     return <div className="text-center p-8">Loading trip details...</div>;
@@ -154,19 +178,28 @@ function ViewTrip() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {dayPlan.places.map((place, index) => (
-                <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                <div
+                  key={index}
+                  className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+                >
                   <h4 className="font-semibold text-gray-800 mb-2">
                     {place.placeName}
                   </h4>
                   <p className="text-gray-600 text-sm mb-2">
                     {place.placeDetails}
                   </p>
-                  {place.placeImageUrl && (
+                  {ItineraryPhotoUrls[place.placeName] ? (
                     <img
-                      src={place.placeImageUrl}
+                      src={ItineraryPhotoUrls[place.placeName]}
                       alt={place.placeName}
                       className="w-full h-40 object-cover rounded-md"
                     />
+                  ) : (
+                    <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded-md">
+                      <span className="text-gray-500 text-sm">
+                        No Image Available
+                      </span>
+                    </div>
                   )}
                   <div className="mt-2 text-sm text-gray-500">
                     <p>Rating: {place.rating}/5</p>
@@ -199,9 +232,10 @@ function ViewTrip() {
                 <span className="text-yellow-500">★ {hotel.rating}</span>
               </div>
               <p className="text-gray-600 text-sm">{hotel.description}</p>
-              {hotel.hotelImageUrl && (
+
+              {HotelPhotoUrl?.[hotel.hotelName] && (
                 <img
-                  src={HotelPhotoUrl}
+                  src={HotelPhotoUrl[hotel.hotelName]}
                   alt={hotel.hotelName}
                   className="mt-3 w-full h-48 object-cover rounded-md"
                 />
