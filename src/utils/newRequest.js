@@ -5,7 +5,7 @@ const newRequest = axios.create({
   withCredentials: true,
 });
 
-// ✅ Automatically attach token to every request
+//✅ Automatically attach token to every request
 newRequest.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
