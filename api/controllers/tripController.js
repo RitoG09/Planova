@@ -23,7 +23,7 @@ export const savedTrip = async (req, res) => {
       tripDetails,
       hotelOptions,
       itinerary,
-      user: req.user.id, // Update this based on your auth system
+      // user: req.user.id, // Update this based on your auth system
     });
     validateHotelOptions(hotelOptions);
     const savedTrip = await newTrip.save();
