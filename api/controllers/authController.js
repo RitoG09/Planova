@@ -11,6 +11,7 @@ export const signup = async (req, res, next) => {
       password: hash,
     });
     await newUser.save();
+
     res.status(201).send("user has been created");
   } catch (error) {
     next(error);
@@ -38,7 +39,7 @@ export const signin = async (req, res, next) => {
         httpOnly: true,
       })
       .status(200)
-      .send(info);
+      .json({ token, user: info });
   } catch (error) {
     next(error);
   }

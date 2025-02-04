@@ -55,7 +55,7 @@ const tripSchema = new Schema(
     tripDetails: { type: tripDetailSchema, required: true },
     hotelOptions: [hotelSchema],
     itinerary: { type: Map, of: dayItinerarySchema },
-    // user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

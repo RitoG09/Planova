@@ -1,6 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../components/ui/button";
+import newRequest from "../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function SignUp() {
   return (
@@ -23,6 +26,8 @@ function SignUp() {
 }
 
 function ReactHookForm() {
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
   const {
     register,
     handleSubmit,
@@ -33,8 +38,31 @@ function ReactHookForm() {
 
   const onsubmit = async (data) => {
     //Submit to server
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    reset();
+
+    try {
+      const { firstname, lastname, email, password } = data;
+      await newRequest.post("/auth/signup", {
+        firstname,
+        lastname,
+        email,
+        password,
+      });
+      navigate("/signin");
+    } catch (err) {
+      if (err.response) {
+        // Server responded with a status other than 200 range
+        setError(
+          `Failed to sign up: ${err.response.status} ${err.response.statusText}`
+        );
+      } else if (err.request) {
+        // Request was made but no response received
+        setError("Failed to sign up: No response from server");
+      } else {
+        // Something else happened while setting up the request
+        setError(`Failed to sign up: ${err.message}`);
+      }
+      console.error("Sign up error:", err);
+    }
   };
 
   return (

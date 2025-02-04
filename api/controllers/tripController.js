@@ -23,7 +23,7 @@ export const savedTrip = async (req, res) => {
       tripDetails,
       hotelOptions,
       itinerary,
-      // user: req.userId, // Update this based on your auth system
+      user: req.user.id, // Update this based on your auth system
     });
     validateHotelOptions(hotelOptions);
     const savedTrip = await newTrip.save();
@@ -60,6 +60,23 @@ export const getTripById = async (req, res) => {
     res.status(200).json(trip);
   } catch (error) {
     console.error("Error fetching trip by ID:", error); // Log full error
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const getTripHistory = async (req, res) => {
+  try {
+    const userId = req.user?.id; // ✅ Extract user ID from decoded token
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const trips = await Trip.find({ user: userId }).sort({ createdAt: -1 }); // ✅ Fetch trips of logged-in user
+
+    res.status(200).json(trips);
+  } catch (error) {
+    console.error("Error fetching trip history:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

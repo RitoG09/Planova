@@ -41,11 +41,19 @@ function ReactHookForm() {
     try {
       const { email, password } = data;
       const res = await newRequest.post("/auth/signin", { email, password });
-      localStorage.setItem("currentUser", JSON.stringify(res.data));
+
+      // ✅ Extract token from response
+      const { token, user } = res.data;
+
+      // ✅ Store token & user in localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+
       navigate("/");
     } catch (error) {
       setError(
-        error.response?.data || "Invalid credentials, please try again."
+        error.response?.data?.message ||
+          "Invalid credentials, please try again."
       );
     }
   };
