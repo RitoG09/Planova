@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import newRequest from "../../../utils/newRequest";
 import { Button } from "../../../components/ui/button";
 import { GetPlaceDetails, PHOTO_REF_URL } from "../../../service/GlobalApi";
+import html2canvas from "html2canvas";
+import jspdf from "jspdf";
 
 function ViewTrip() {
   const { tripId } = useParams();
@@ -12,6 +14,7 @@ function ViewTrip() {
   const [PhotoUrl, setPhotoUrl] = useState();
   const [HotelPhotoUrl, setHotelPhotoUrl] = useState();
   const [ItineraryPhotoUrls, setItineraryPhotoUrls] = useState({});
+  const itineraryRef = useRef(null);
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -40,7 +43,7 @@ function ViewTrip() {
     fetchTrip();
   }, [tripId]);
 
-  // ✅ Run GetPlacePhoto only when trip is available
+  //  GetPlacePhoto
   useEffect(() => {
     if (!trip) return; // Ensure trip is available before calling the API
 
@@ -70,6 +73,7 @@ function ViewTrip() {
     GetPlacePhoto();
   }, [trip]); // ✅ Runs only when trip is set
 
+  // FetchHotelPhotos
   useEffect(() => {
     if (!trip || !trip.hotelOptions) return; // Ensure trip and hotels exist
 
@@ -98,6 +102,7 @@ function ViewTrip() {
     fetchHotelPhotos();
   }, [trip]);
 
+  //FetchItinerary
   useEffect(() => {
     if (!trip || !trip.itinerary) return;
     const fetchItineraryPhotos = async () => {
@@ -121,6 +126,33 @@ function ViewTrip() {
     };
     fetchItineraryPhotos();
   }, [trip]);
+
+  const DownloadPdf = async () => {
+    const element = itineraryRef.current;
+    if (!element) return;
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: true,
+    });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jspdf("p", "mm", "a4");
+    const imgWidth = 210;
+    const pageHeight = 297;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    pdf.save("Itinerary.pdf");
+  };
 
   if (loading)
     return <div className="text-center p-8">Loading trip details...</div>;
@@ -156,11 +188,16 @@ function ViewTrip() {
           </div>
         </div>
 
-        <Button className="mb-6 bg-black">Download PDF Itinerary</Button>
+        <Button className="mb-6 bg-black" onClick={DownloadPdf}>
+          Download PDF Itinerary
+        </Button>
       </div>
 
       {/* Itinerary Section */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div
+        ref={itineraryRef}
+        className="bg-white rounded-lg shadow-md p-6 mb-8"
+      >
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           Daily Itinerary
         </h2>

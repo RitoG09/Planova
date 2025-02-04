@@ -48,7 +48,7 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <>
-          <Header />
+          {/* <Header /> */}
           <ViewTrip />
         </>
       </ProtectedRoute>
