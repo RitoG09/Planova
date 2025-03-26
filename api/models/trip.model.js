@@ -61,3 +61,6 @@ const tripSchema = new Schema(
 );
 
 export default mongoose.model("Trip", tripSchema);
+
+
+

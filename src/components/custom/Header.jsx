@@ -35,7 +35,7 @@ function Header() {
               <BorderBeam />
             </span>
             <Link onClick={handleSignout}>
-              <Button className="bg-blue-950 hover:bg-yellow-700">
+              <Button className="bg-blue-950 hover:bg-yellow-600">
                 Sign out
               </Button>
             </Link>
@@ -43,12 +43,12 @@ function Header() {
         ) : (
           <>
             <Link to={"/signin"}>
-              <Button className="bg-blue-950 hover:bg-yellow-700">
+              <Button className="bg-blue-950 hover:bg-yellow-600">
                 Sign in
               </Button>
             </Link>
             <Link to={"/signup"}>
-              <Button className="bg-blue-950 hover:bg-yellow-700">
+              <Button className="bg-blue-950 hover:bg-yellow-600">
                 Sign up
               </Button>
             </Link>
