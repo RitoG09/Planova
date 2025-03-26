@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const newRequest = axios.create({
-  baseURL: "https://planova-web-backend.onrender.com/api/v1",
+  baseURL: "https://planova-web-backend.onrender.com",
   withCredentials: true,
 });
 

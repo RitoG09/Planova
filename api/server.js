@@ -25,8 +25,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/trips", tripRoute);
+app.use("/auth", authRoute);
+app.use("/trips", tripRoute);
 
 //Error Middleware
 app.use((err, req, res, next) => {
