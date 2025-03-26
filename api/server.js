@@ -12,16 +12,14 @@ mongoose.set("strictQuery", true);
 
 const connect = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URL);
-    console.log("database connected");
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Database is connected..");
   } catch (error) {
     console.log(error);
   }
 };
 
-app.use(
-  cors({ origin: "https://planova-web-ten.vercel.app", credentials: true })
-);
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -37,5 +35,5 @@ app.use((err, req, res, next) => {
 
 app.listen(5050, () => {
   connect();
-  console.log("backend is listening");
+  console.log("backend is listening..");
 });
