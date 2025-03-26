@@ -51,7 +51,7 @@ function Hero() {
           Learn More
         </Button>
         <Link to={"/new-trip"}>
-          <Button className="cursor-pointer bg-primary text-white rounded-lg px-6 py-3 text-lg hover:bg-yellow-700 transition bg-blue-950">
+          <Button className="cursor-pointer bg-primary text-white rounded-lg px-6 py-3 text-lg hover:bg-yellow-600 transition bg-blue-950">
             Get Started
           </Button>
         </Link>
@@ -64,7 +64,7 @@ function Hero() {
         />
         <div className="w-1/2 flex justify-center relative">
           <Globe className="relative z-10" />
-          <span className="absolute text-7xl font-bold text-yellow-700 z-20">
+          <span className="absolute text-7xl font-bold text-yellow-600 z-20">
             TRAVEL
           </span>
         </div>
