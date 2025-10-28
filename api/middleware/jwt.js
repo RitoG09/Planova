@@ -10,7 +10,7 @@ export const verifyToken = async (req, res, next) => {
         .json({ message: "No token, authorization denied" });
 
     const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.id).select("password");
 
     // Check if user exists
     if (!user) {
@@ -23,5 +23,3 @@ export const verifyToken = async (req, res, next) => {
     res.status(401).json({ message: "Token is invalid" });
   }
 };
-
-

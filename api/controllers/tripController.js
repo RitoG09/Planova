@@ -13,9 +13,9 @@ const validateHotelOptions = (hotels) => {
 export const savedTrip = async (req, res) => {
   try {
     console.log("Received request body:", req.body);
-    const { tripDetails, hotelOptions, itinerary, user } = req.body;
+    const { tripDetails, hotelOptions, itinerary } = req.body;
 
-    // Temporary validation
+    // validation
     if (!tripDetails?.location) throw new Error("Location is required");
     if (!hotelOptions?.length) throw new Error("Hotel options missing");
 
@@ -63,21 +63,3 @@ export const getTripById = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
-export const getTripHistory = async (req, res) => {
-  try {
-    const userId = req.user?.id; // ✅ Extract user ID from decoded token
-
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
-    }
-
-    const trips = await Trip.find({ user: userId }).sort({ createdAt: -1 }); // ✅ Fetch trips of logged-in user
-
-    res.status(200).json(trips);
-  } catch (error) {
-    console.error("Error fetching trip history:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-

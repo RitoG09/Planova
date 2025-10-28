@@ -15,7 +15,7 @@ const placeSchema = new Schema({
     min: 0,
     max: 5,
     set: (v) => (v === "N/A" ? null : v), // Convert "N/A" to null
-  }, // Allow null values,
+  }, 
   timeTravel: String,
 });
 
@@ -38,7 +38,7 @@ const hotelSchema = new Schema({
     type: Number,
     min: 0,
     max: 5,
-    set: (v) => (v === "N/A" ? null : v), // Convert "N/A" to null
+    set: (rating) => (rating === "N/A" ? null : rating), // Convert "N/A" to null
   },
   description: String,
 });
@@ -55,12 +55,8 @@ const tripSchema = new Schema(
     tripDetails: { type: tripDetailSchema, required: true },
     hotelOptions: [hotelSchema],
     itinerary: { type: Map, of: dayItinerarySchema },
-    // user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );
 
 export default mongoose.model("Trip", tripSchema);
-
-
-

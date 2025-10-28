@@ -19,8 +19,22 @@ const connect = async () => {
   }
 };
 
+const allowedOrigins = [
+  "https://planova-web.onrender.com",
+  "http://localhost:5173",
+];
+
 app.use(
-  cors({ origin: "https://planova-web.onrender.com", credentials: true })
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
 );
 app.use(express.json());
 app.use(cookieParser());
