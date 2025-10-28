@@ -15,7 +15,7 @@ const placeSchema = new Schema({
     min: 0,
     max: 5,
     set: (v) => (v === "N/A" ? null : v), // Convert "N/A" to null
-  }, 
+  },
   timeTravel: String,
 });
 
@@ -44,6 +44,11 @@ const hotelSchema = new Schema({
 });
 
 const tripDetailSchema = new Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   location: { type: String, required: true },
   duration: { type: String, required: true },
   budget: { type: String, required: true },

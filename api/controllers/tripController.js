@@ -20,6 +20,7 @@ export const savedTrip = async (req, res) => {
     if (!hotelOptions?.length) throw new Error("Hotel options missing");
 
     const newTrip = new Trip({
+      userId: req.user._id,
       tripDetails,
       hotelOptions,
       itinerary,
@@ -40,26 +41,21 @@ export const savedTrip = async (req, res) => {
   }
 };
 
-export const getTripById = async (req, res) => {
+export const getTripHistory = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid trip ID format" });
+    const userId = req.user._id;
+    if (!userId) {
+      return res.status(400).json({ message: "User ID not found in request." });
     }
 
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(500).json({ message: "Database connection error" });
+    const trips = await Trip.find({ userId: userId }).sort({ createdAt: -1 });
+    if (!trips || trips.length === 0) {
+      return res.status(404).json({ message: "No trips found for this user" });
     }
 
-    const trip = await Trip.findById(id);
-
-    if (!trip) {
-      return res.status(404).json({ message: "Trip not found" });
-    }
-
-    res.status(200).json(trip);
+    res.status(200).json(trips);
   } catch (error) {
-    console.error("Error fetching trip by ID:", error); // Log full error
+    console.error("Error fetching trip history:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
