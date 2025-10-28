@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import {
-  AI_PROMPT,
-  selectBudgetOption,
-  selectTravelesList,
-} from "../../constants/options";
+import { AI_PROMPT } from "../../constants/prompt";
 import { Button } from "../../components/ui/button";
 import toast, { Toaster } from "react-hot-toast";
 import { chatSession } from "../../service/AiModal";
@@ -14,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Plane,
   Clock,
-  Wallet,
+  Wallet, 
   Users,
   Palmtree,
   ArrowRight,
@@ -206,17 +202,6 @@ function NewTrip() {
               <ArrowRight size={20} />
             </button>
           </div>
-
-          {/* Background Image
-          <div
-            className="fixed inset-0 -z-10 opacity-5"
-            style={{
-              backgroundImage:
-                'url("https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=80")',
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div> */}
         </div>
       </div>
     </div>

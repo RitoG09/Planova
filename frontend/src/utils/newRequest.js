@@ -1,11 +1,21 @@
 import axios from "axios";
 
+const allowedOrigins = {
+  production: "https://planova-api.onrender.com", // your deployed API
+  development: "http://localhost:5050", // your local backend
+};
+
+const baseURL =
+  import.meta.env.MODE === "development"
+    ? allowedOrigins.development
+    : allowedOrigins.production;
+
 const newRequest = axios.create({
-  baseURL: "https://planova-web-backend.onrender.com",
+  baseURL,
   withCredentials: true,
 });
 
-//✅ Automatically attach token to every request
+// Automatically attach token to every request
 newRequest.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {

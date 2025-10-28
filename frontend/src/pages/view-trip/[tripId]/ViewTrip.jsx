@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import newRequest from "../../../utils/newRequest";
 import { Button } from "../../../components/ui/button";
 import { GetPlaceDetails, PHOTO_REF_URL } from "../../../service/GlobalApi";
-import html2canvas from "html2canvas";
 import jspdf from "jspdf";
 
 function ViewTrip() {
