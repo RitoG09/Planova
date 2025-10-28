@@ -10,12 +10,14 @@ function TripHistory() {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const token = localStorage.getItem("token"); // ✅ Ensure token exists
+        const token = localStorage.getItem("token");
         if (!token) {
           console.error("No token found!");
           setError("Authentication error. Please log in again.");
           return;
         }
+        console.log("🔹 Sending token:", token);
+
         const response = await newRequest.get("/trips/history", {
           headers: {
             Authorization: `Bearer ${token}`, // Send JWT token
