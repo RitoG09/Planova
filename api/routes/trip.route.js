@@ -1,5 +1,5 @@
 import express from "express";
-import { savedTrip, getTripHistory } from "../controllers/tripController.js";
+import { savedTrip, getTripHistory, getTripById } from "../controllers/tripController.js";
 import { verifyToken } from "../middleware/jwt.js";
 
 const router = express.Router();
