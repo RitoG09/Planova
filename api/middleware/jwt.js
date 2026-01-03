@@ -10,25 +10,25 @@ export const verifyToken = async (req, res, next) => {
 
     const token = cookieToken || rawAuth?.split(" ")[1];
     if (!token) {
-      console.log("❌ No token found");
+      console.log("No token found");
       return res
         .status(401)
         .json({ message: "No token, authorization denied" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_KEY);
-    console.log("✅ Decoded JWT:", decoded);
+    console.log("Decoded JWT:", decoded);
 
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.id).select("password");
     if (!user) {
-      console.log("❌ User not found for decoded id:", decoded.id);
+      console.log("User not found for decoded id:", decoded.id);
       return res.status(401).json({ message: "User not found" });
     }
 
     req.user = user;
     next();
   } catch (error) {
-    console.error("❌ Token verification error:", error.message);
+    console.error("Token verification error:", error.message);
     res.status(401).json({ message: "Token is invalid" });
   }
 };

@@ -12,25 +12,52 @@ const validateHotelOptions = (hotels) => {
 
 export const savedTrip = async (req, res) => {
   try {
+    if (!req.user?._id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     console.log("Received request body:", req.body);
     const { tripDetails, hotelOptions, itinerary } = req.body;
 
-    // validation
-    if (!tripDetails?.location) throw new Error("Location is required");
-    if (!hotelOptions?.length) throw new Error("Hotel options missing");
+    // ---- VALIDATION ----
+    if (!tripDetails?.location) {
+      throw new Error("Location is required");
+    }
+
+    if (!tripDetails?.duration) {
+      throw new Error("Duration is required");
+    }
+
+    if (!hotelOptions?.length) {
+      throw new Error("Hotel options missing");
+    }
+
+    if (!itinerary || typeof itinerary !== "object") {
+      throw new Error("Itinerary must be an object");
+    }
+
+    tripDetails.userId = req.user._id;
+
+    // ---- ENSURE STRING TYPES (schema expects String) ----
+    tripDetails.duration = String(tripDetails.duration);
+    tripDetails.travelers = String(tripDetails.travelers);
+
+    validateHotelOptions(hotelOptions);
 
     const newTrip = new Trip({
-      userId: req.user._id,
       tripDetails,
       hotelOptions,
       itinerary,
       // user: req.user.id, // Update this based on your auth system
     });
-    validateHotelOptions(hotelOptions);
-    const savedTrip = await newTrip.save();
-    console.log("Saved trip:", savedTrip);
 
-    res.status(201).json(savedTrip);
+    const savedTrip = await newTrip.save();
+    console.log("Saved trip:", savedTrip._id);
+
+    res.status(201).json({
+      success: true,
+      trip: savedTrip,
+    });
   } catch (error) {
     console.error("Error saving trip:", error);
     res.status(500).json({
