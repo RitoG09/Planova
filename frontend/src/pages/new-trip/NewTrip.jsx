@@ -71,7 +71,12 @@ function NewTrip() {
         tripDetails: tripData.tripDetails,
       });
 
-      const tripId = response.data._id; // Get the trip ID from the response
+      const tripId = response.data?.trip?._id;
+      if (!tripId) {
+  console.error("Trip ID missing from response:", response.data);
+  toast.error("Trip saved, but failed to open trip page.");
+  return;
+} 
       toast.success("Trip generated and saved successfully!");
       console.log("Saved trip:", response.data);
       navigate("/view-trip/" + tripId); // Navigate to the new trip page with the trip ID
