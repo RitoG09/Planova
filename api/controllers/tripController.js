@@ -10,6 +10,31 @@ const validateHotelOptions = (hotels) => {
   });
 };
 
+export const getTripById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid trip ID" });
+    }
+
+    const trip = await Trip.findOne({
+      _id: id,
+      "tripDetails.userId": req.user._id, 
+    });
+
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    res.status(200).json(trip);
+  } catch (error) {
+    console.error("Error fetching trip:", error);
+    res.status(500).json({ message: "Failed to fetch trip" });
+  }
+};
+
+
 export const savedTrip = async (req, res) => {
   try {
     if (!req.user?._id) {
