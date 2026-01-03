@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const allowedOrigins = {
-  production: "https://planova-api.onrender.com", // your deployed API
-  development: "http://localhost:5050", // your local backend
+  production: "https://planova-web-backend.onrender.com", 
+  development: "http://localhost:5050"
 };
 
 const baseURL =
