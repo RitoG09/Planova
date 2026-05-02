@@ -75,5 +75,5 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 app.listen(5050, () => {
   connect();
-  console.log("backend is listening..");
+  console.log("backend is running..");
 });
