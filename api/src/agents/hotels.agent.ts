@@ -8,7 +8,7 @@ const toolsByName = { getHotels };
 
 const modelWithTools = llm.bindTools(tools);
 
-export const hotelNodes: GraphNode<any> = async (state: any) => {
+export const hotelNode: GraphNode<any> = async (state: any) => {
   const plan = state.plan;
   const response = await modelWithTools.invoke([
     new SystemMessage(`

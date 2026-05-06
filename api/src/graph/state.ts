@@ -1,4 +1,9 @@
-import { StateSchema, MessagesValue, ReducedValue, Annotation } from "@langchain/langgraph";
+import {
+  StateSchema,
+  MessagesValue,
+  ReducedValue,
+  Annotation,
+} from "@langchain/langgraph";
 import { z } from "zod";
 
 export const GraphState = new StateSchema({
@@ -10,6 +15,9 @@ export const GraphState = new StateSchema({
     reducer: (_, update) => update ?? [],
   }),
   hotels: new ReducedValue(z.array(z.any()), {
+    reducer: (_, update) => update ?? [],
+  }),
+  weather: new ReducedValue(z.array(z.any()), {
     reducer: (_, update) => update ?? [],
   }),
 });
