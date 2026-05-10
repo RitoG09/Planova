@@ -1,7 +1,7 @@
 import { GraphNode } from "@langchain/langgraph";
 import { SystemMessage } from "@langchain/core/messages";
 import { llm } from "../services/llm";
-import { PlanSchema } from "../schemas/plan.schema";
+import { PlanSchema } from "../schemas/schema";
 
 export const plannerNode: GraphNode<any> = async (state) => {
   const messages = Array.isArray(state.messages) ? state.messages : [];

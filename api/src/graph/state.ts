@@ -20,4 +20,7 @@ export const GraphState = new StateSchema({
   weather: new ReducedValue(z.array(z.any()), {
     reducer: (_, update) => update ?? [],
   }),
+  itineraryResult: new ReducedValue(z.any().nullable(), {
+    reducer: (_, update) => update ?? null,
+  }),
 });
