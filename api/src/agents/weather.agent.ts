@@ -28,17 +28,40 @@ You MUST call getWeather tool.
     },
   ]);
 
-  const results: any[] = [];
+  let result = null;
 
   for (const toolCall of response.tool_calls || []) {
     const tool = toolsByName[toolCall.name];
 
     const observation = await tool.invoke(toolCall);
+    const raw =
+      typeof observation.content === "string"
+        ? JSON.parse(observation.content)
+        : (observation.content ?? observation);
 
-    results.push(observation);
+    result = {
+      current: {
+        temperature: raw.current?.temperature,
+
+        condition: raw.current?.condition,
+
+        description: raw.current?.description,
+      },
+
+      daily:
+        raw.daily?.map((day: any) => ({
+          date: day.date,
+
+          minTemp: day.temperature?.min,
+          maxTemp: day.temperature?.max,
+
+          condition: day.condition,
+          description: day.description,
+        })) ?? [],
+    };
   }
 
   return {
-    weather: results[0],
+    weather: result,
   };
 };

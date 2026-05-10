@@ -33,9 +33,22 @@ export const placesNode: GraphNode<any> = async (state) => {
     for (const toolCall of response.tool_calls) {
       const tool = toolsByName[toolCall.name as keyof typeof toolsByName];
       const observation = await tool.invoke(toolCall);
-      result.push(observation);
+      const placesArray = Array.isArray(observation)
+        ? observation
+        : (observation?.content ?? []);
+
+      // normalize + compress
+      const cleaned = placesArray.map((place: any) => ({
+        name: place.name,
+        rating: place.rating ?? null,
+      }));
+
+      result.push(...cleaned);
     }
-    return { places: result };
+
+    return {
+      places: result,
+    };
   }
 
   return { places: [] };

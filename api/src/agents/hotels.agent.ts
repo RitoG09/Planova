@@ -32,7 +32,13 @@ You MUST call getHotels tool.
     const hotelsArray = Array.isArray(observation)
       ? observation
       : (observation?.content ?? []);
-    results.push(...hotelsArray);
+    // normalize + compress
+    const cleaned = hotelsArray.map((hotel: any) => ({
+      name: hotel.name,
+      rating: hotel.rating ?? null,
+      address: hotel.address ?? "",
+    }));
+    results.push(...cleaned);
   }
 
   return { hotels: results };

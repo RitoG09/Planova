@@ -6,6 +6,9 @@ import { HumanMessage } from "@langchain/core/messages";
 import { hotelNode } from "../agents/hotels.agent";
 import { weatherNode } from "../agents/weather.agent";
 import { aggregatorNode } from "../agents/aggregator.agent";
+import { MemorySaver } from "@langchain/langgraph";
+
+const checkpointer = new MemorySaver();
 
 export const graph = new StateGraph(GraphState)
   // nodes
@@ -26,14 +29,21 @@ export const graph = new StateGraph(GraphState)
   .addEdge("weather_node", "aggregator_node")
   //end
   .addEdge("aggregator_node", END)
-  .compile();
+  .compile({ checkpointer });
 
 async function test() {
-  const result = await graph.invoke({
-    messages: [
-      new HumanMessage("I want to go to Manali for 5 days with 5 people"),
-    ],
-  });
+  const result = await graph.invoke(
+    {
+      messages: [
+        new HumanMessage("make it cheaper"),
+      ],
+    },
+    {
+      configurable: {
+        thread_id: "user-1",
+      },
+    },
+  );
   console.log(result);
 }
 
